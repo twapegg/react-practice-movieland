@@ -4,17 +4,24 @@ import SearchIcon from "./search.svg";
 
 import MovieCard from "./MovieCard.jsx";
 
-const API = "http://www.omdbapi.com?apikey=fbb0154e";
-
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const searchMovies = async (title) => {
-    const response = await fetch(`${API}&s=${title}`);
-    const data = await response.json();
+    const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(
+      `http://www.omdbapi.com/?apikey=fbb0154e&s=${title}`
+    )}`;
 
-    setMovies(data.Search);
+    try {
+      const response = await fetch(allOriginsUrl);
+      const data = await response.json();
+      const parsedData = JSON.parse(data.contents);
+      setMovies(parsedData.Search);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      // Handle the error
+    }
   };
 
   useEffect(() => {
